@@ -1,0 +1,71 @@
+name: dev-stack
+
+services:
+
+#  user-api:
+#    container_name: "user-api"
+#    build:
+#      dockerfile: ./apps/api/Dockerfile
+#      context: ./
+#    depends_on:
+#      postgres-db:
+#        condition: service_healthy
+#    env_file:
+#      - .env_docker
+#    ports:
+#      - '3000:3000'
+#    networks:
+#      - backend
+#    #restart: unless-stopped
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 40s
+
+  postgres-db:
+    container_name: "postgres-db"
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: my_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: "pgadmin"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8888:80"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - backend
+    restart: unless-stopped
+
+
+volumes:
+  db_data:
+  pgadmin_data:
+
+networks:
+  backend:
+    driver: bridge
