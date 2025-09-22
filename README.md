@@ -44,6 +44,8 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+You can customize the application port and the database url in the .env file.
+The same is true for the dockerfile.
 
 ## Run tests
 
@@ -77,17 +79,22 @@ Check out a few resources that may come in handy when working with NestJS:
 
 ## Project structure
 
-The project is a NestJs monorepo whith core modules organized like DDD
-divided into modules, each module is in charge of a specific feature. 
-The main modules are:
+The project is a NestJs monorepo structured as follow: 
 
+- apps: contain the main application including all controller defintions and dto.
+  Some specific decorator and exception filters are also defined here although they could be moved also in a shared module for better reuse.
+- libs: includes all the business logic and shared modules.
+  * core library contains modules for handling user and tasks. I chose to separate their implementation to allow flexible composition in other modules
+    reducing circular dependencies and create use case if necessary. 
+  * Each moduele follow a DDD structure:
+    * domain: define entities and business logic with the services and repositories interfaces.
+    * infrastacture: implement the repository and the mapper for access database
+
+  * database: I chose to use Prisma as the ORM. The database schema is defined in the prisma folder. The Prisma client is fullyt generated and migration files are easy to manage and deploy. 
+  * auth: handle authentication logic
+
+I believe this kind of organization give you the maximum flexibility of composing modules and user case for the application.
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- Author - [Gisella Bronzetti](https://twitter.com/kammysliwiec)

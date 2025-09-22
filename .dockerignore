@@ -5,8 +5,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Prisma client files (will be generated during build)
-libs/shared/src/libs/database/prisma/src/database/client
-**/client
+libs/database/generated-client
 **/.prisma
 
 # Build outputs

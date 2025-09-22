@@ -24,6 +24,20 @@ services:
       retries: 3
       start_period: 40s
 
+  db-filler-job:
+    container_name: "db-filler-job"
+    build:
+      dockerfile: ./apps/api/Dockerfile
+      context: ./
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    env_file:
+      - .env_docker
+    networks:
+      - backend
+    command: ["npm", "run","prisma:migrate:deploy"]
+
   postgres-db:
     container_name: "postgres-db"
     image: postgres:14-alpine
