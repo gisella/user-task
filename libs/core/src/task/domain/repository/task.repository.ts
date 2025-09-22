@@ -1,14 +1,23 @@
 import { Task, TaskStatus } from '@app/core/task';
 
 export interface TaskSearchParams {
-  userId: number;
-  taskId?: number;
+  userId: string;
   title?: string;
-  status?: TaskStatus;
+  status?: string;
+  createdAt?: { from?: string; to?: string };
+  orderBy?: 'id' | 'title';
+  sortOrder?: 'asc' | 'desc';
+  limit?: number;
+  offset?: number;
+}
+export interface TaskList {
+  items: Task[];
+  total: number;
+  offset: number;
 }
 export abstract class TaskRepositoryI {
   abstract save(task: Task): Promise<Task>;
-  abstract deleteTask(taskId: number): Promise<void>;
-  abstract findTask(taskId: number): Promise<Task | null>;
-  abstract listTask(searchParams: TaskSearchParams): Promise<Task[] | null>;
+  abstract deleteTask(taskId: string): Promise<void>;
+  abstract findTask(taskId: string): Promise<Task | null>;
+  abstract listTask(searchParams: TaskSearchParams): Promise<TaskList>;
 }

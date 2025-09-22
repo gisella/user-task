@@ -5,11 +5,11 @@ import { Task, TaskStatus } from '@app/core/task/domain';
 export class TaskMapper {
   static toEntity(dbTask: UserTypes.tasks): Task {
     return new Task({
-      id: Number(dbTask.id),
-      userId: Number(dbTask.user_id),
+      id: dbTask.id.toString(),
+      userId: dbTask.user_id.toString(),
       title: dbTask.title,
       description: dbTask.description,
-      status: (dbTask.taskStatus ?? 'NEW') as TaskStatus,
+      status: (dbTask.taskStatus ?? TaskStatus.NEW) as TaskStatus,
       createdAt:
         dbTask.createdAt instanceof Date
           ? DateTime.fromJSDate(dbTask.createdAt)

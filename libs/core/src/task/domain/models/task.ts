@@ -16,12 +16,12 @@ export class Task {
     description: 'Task id',
     example: '123',
   })
-  id: number;
+  id: string;
   @ApiProperty({
-    description: 'Task id',
+    description: 'User id',
     example: '123',
   })
-  userId: number;
+  userId: string;
   @ApiProperty({
     description: 'Short title describing the task',
     example: 'First task title',

@@ -1,6 +1,11 @@
 import { Logger, NotFoundException } from '@nestjs/common';
-import { DatabaseService } from '@app/database';
-import { Task, TaskRepositoryI, TaskSearchParams } from '@app/core/task/domain';
+import { DatabaseService, UserTypes } from '@app/database';
+import {
+  Task,
+  TaskList,
+  TaskRepositoryI,
+  TaskSearchParams,
+} from '@app/core/task/domain';
 import { TaskMapper } from '@app/core/task/infrastructure/mappers/task.mapper';
 
 export class TaskRepository extends TaskRepositoryI {
@@ -11,7 +16,7 @@ export class TaskRepository extends TaskRepositoryI {
   }
 
   async save(task: Task): Promise<Task> {
-    let newTask;
+    let newTask: UserTypes.tasks;
     try {
       if (task.id) {
         newTask = await this.databaseService[this.baseEntity].upsert({
@@ -33,7 +38,7 @@ export class TaskRepository extends TaskRepositoryI {
       throw error;
     }
   }
-  async deleteTask(taskId: number): Promise<void> {
+  async deleteTask(taskId: string): Promise<void> {
     try {
       await this.databaseService[this.baseEntity].delete({
         where: { id: BigInt(taskId) },
@@ -42,13 +47,13 @@ export class TaskRepository extends TaskRepositoryI {
     } catch (error) {
       this.logger.error(`Failed to delete task with ID: ${taskId}`, error);
       if (error?.code === 'P2025') {
-        throw new NotFoundException(`Task with ID ${taskId} not found`);
+        throw new NotFoundException(`Task not found`);
       }
       throw error;
     }
   }
 
-  async findTask(taskId: number): Promise<Task | null> {
+  async findTask(taskId: string): Promise<Task | null> {
     try {
       const dbTask = await this.databaseService[this.baseEntity].findFirst({
         where: {
@@ -64,27 +69,50 @@ export class TaskRepository extends TaskRepositoryI {
       return null;
     }
   }
-  async listTask(searchParams: TaskSearchParams): Promise<Task[] | null> {
+
+  async listTask(searchParams: TaskSearchParams): Promise<TaskList> {
     try {
-      const tasks = await this.databaseService[this.baseEntity].findMany({
-        where: {
-          userId: BigInt(searchParams.userId),
-          ...(searchParams.title
-            ? { title: { contains: searchParams.title, mode: 'insensitive' } }
-            : {}),
-          ...(searchParams.status
-            ? { taskStatus: searchParams.status as any }
-            : {}),
-        },
-        orderBy: { createdAt: 'desc' },
+      const where: Record<string, unknown> = {
+        user_id: BigInt(searchParams.userId),
+        ...(searchParams.title
+          ? { title: { contains: searchParams.title, mode: 'insensitive' } }
+          : {}),
+        ...(searchParams.status
+          ? { taskStatus: searchParams.status as any }
+          : {}),
+      };
+
+      const total = await this.databaseService[this.baseEntity].count({
+        where,
       });
-      return tasks.map((dbTask) => TaskMapper.toEntity(dbTask));
+
+      const limit = searchParams.limit ?? 10;
+      const offset = searchParams.offset ?? 0;
+      const orderBy = searchParams.orderBy ?? 'id';
+      const sortOrder = searchParams.sortOrder ?? 'desc';
+
+      const datas = await this.databaseService[this.baseEntity].findMany({
+        where,
+        orderBy: { [orderBy]: sortOrder },
+        skip: offset,
+        take: limit,
+      });
+
+      return {
+        items: datas.map((dbTask) => TaskMapper.toEntity(dbTask)),
+        total,
+        offset: offset + limit,
+      };
     } catch (error) {
       this.logger.error(
         'Failed to list tasks with provided search parameters',
         error,
       );
-      return [];
+      return {
+        items: [],
+        total: 0,
+        offset: searchParams.offset ?? 0,
+      };
     }
   }
 }
