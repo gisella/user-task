@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '../generated-client/user-types';
-import { DatabaseService } from '@app/database/database/database.service';
+import { DatabaseService } from '@app/database/database.service';
 
 export type PrismaClientDb = PrismaClient;
 
