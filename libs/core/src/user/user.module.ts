@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { DatabaseModule, DatabaseService } from '@app/database';
 import { UserCoreService, UserRepositoryI } from '@app/core/user/domain';
 import { UserRepository } from '@app/core/user/infrastructure';
-import { CryptoModule } from '@app/auth/crypto.module';
+import { CryptModule } from '@app/crypt/crypt.module';
 
 @Module({
-  imports: [DatabaseModule, CryptoModule],
+  imports: [DatabaseModule, CryptModule],
   providers: [
     UserCoreService,
     {

@@ -27,20 +27,37 @@ export class UserRepository extends UserRepositoryI {
     }
   }
 
-  async getUser(email: string): Promise<User | null> {
+  async getByEmail(email: string): Promise<User | null> {
     try {
       const user = await this.databaseService[this.baseEntity].findUnique({
-        where: {
-          email: email,
-        },
+        where: { email },
       });
-
       if (!user) {
         return null;
       }
       return UserMapper.toEntity(user);
     } catch (error) {
-      this.logger.error(`Error fetching lead with email ${email}:`, error);
+      this.logger.error(`Error fetching user with email ${email}:`, error);
+      return null;
+    }
+  }
+
+  async getById(userId: string): Promise<User | null> {
+    try {
+      const idNum = Number(userId);
+      if (Number.isNaN(idNum)) {
+        this.logger.warn(`Invalid userId provided (not a number): ${userId}`);
+        return null;
+      }
+      const user = await this.databaseService[this.baseEntity].findUnique({
+        where: { id: idNum },
+      });
+      if (!user) {
+        return null;
+      }
+      return UserMapper.toEntity(user);
+    } catch (error) {
+      this.logger.error(`Error fetching user with id ${userId}:`, error);
       return null;
     }
   }

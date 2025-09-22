@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { User, UserRepositoryI } from '@app/core/user/domain';
-import { CryptService } from '@app/auth/crypt.service';
+import { CryptService } from '@app/crypt/crypt.service';
+import { use } from 'passport';
 
 @Injectable()
 export class UserCoreService {
@@ -12,7 +13,7 @@ export class UserCoreService {
   ) {}
 
   async createUser(user: User): Promise<User> {
-    const userFound = await this.userRepository.getUser(user.email);
+    const userFound = await this.userRepository.getByEmail(user.email);
     if (userFound) {
       throw new BadRequestException('Email already in use');
     }
@@ -21,6 +22,34 @@ export class UserCoreService {
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
-    return await this.userRepository.getUser(email);
+    try {
+      if (email === null || email === undefined || email.length === 0) {
+        return null;
+      }
+      return await this.userRepository.getByEmail(email);
+    } catch (e) {
+      this.logger.error(e, {
+        message: 'Error getting user by email',
+        service: 'UserCoreService',
+        email,
+      });
+      return null;
+    }
+  }
+
+  async getUserById(userId: string): Promise<User | null> {
+    try {
+      if (userId === null || userId === undefined || userId.length === 0) {
+        return null;
+      }
+      return await this.userRepository.getById(userId);
+    } catch (e) {
+      this.logger.error(e, {
+        message: 'Error getting user by userId',
+        service: 'UserCoreService',
+        userId,
+      });
+      return null;
+    }
   }
 }
