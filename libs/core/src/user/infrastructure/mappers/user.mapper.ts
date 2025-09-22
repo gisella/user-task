@@ -7,7 +7,6 @@ export class UserMapper {
       id: dbuser.id.toString(),
       email: dbuser.email,
       createAt: dbuser.createdAt,
-      //status: dbuser.status.toString(), @todo controllare come mai non viene valorizzata
       firstName: dbuser.name,
       password: dbuser.password,
     });

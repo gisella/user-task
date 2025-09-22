@@ -3,26 +3,56 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 
 export class User {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'user id',
+    example: '123',
+    type: String,
+  })
   @IsString()
   id: string;
 
+  @ApiProperty({
+    description: 'Email address ',
+    example: 'john@example.com',
+    type: String,
+  })
   @IsString()
-  @ApiProperty()
   email: string;
 
   @Exclude()
   password: string;
 
+  @ApiProperty({
+    description: 'First name of the user',
+    example: 'John',
+    type: String,
+  })
   @IsString()
-  @ApiProperty()
   firstName: string;
+
+  @ApiProperty({
+    description: 'Last name of the user (nullable)',
+    example: 'Doe',
+    type: String,
+    nullable: true,
+  })
   @IsString()
-  @ApiProperty()
   lastName: string | null;
-  @IsString()
+
+  @ApiProperty({
+    description: 'Date and time when the user was created',
+    example: '2025-01-01T00:00:00Z',
+    type: Date,
+    format: 'date-time',
+  })
   createAt: Date;
-  @IsString()
+
+  @ApiProperty({
+    description: 'Last update timestamp for the user',
+    example: '2025-07-01T16:55:00Z',
+    type: Date,
+    format: 'date-time',
+  })
   updateAt: Date;
 
   constructor(data: Partial<User>) {
