@@ -1,14 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/user-tasks/src",
+  "sourceRoot": "apps/api/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/user-tasks/tsconfig.app.json"
+    "tsConfigPath": "apps/api/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/user-tasks",
+  "root": "apps/api",
   "projects": {
     "api": {
       "type": "application",
@@ -19,6 +19,15 @@
         "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
     "core": {
       "type": "library",
       "root": "libs/core",
@@ -26,6 +35,15 @@
       "sourceRoot": "libs/core/src",
       "compilerOptions": {
         "tsConfigPath": "libs/core/tsconfig.lib.json"
+      }
+    },
+    "crypt": {
+      "type": "library",
+      "root": "libs/crypt",
+      "entryFile": "index",
+      "sourceRoot": "libs/crypt/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/crypt/tsconfig.lib.json"
       }
     },
     "database": {
@@ -44,15 +62,6 @@
       "sourceRoot": "libs/logger/src",
       "compilerOptions": {
         "tsConfigPath": "libs/logger/tsconfig.lib.json"
-      }
-    },
-    "user-tasks": {
-      "type": "application",
-      "root": "apps/user-tasks",
-      "entryFile": "main",
-      "sourceRoot": "apps/user-tasks/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/user-tasks/tsconfig.app.json"
       }
     }
   }

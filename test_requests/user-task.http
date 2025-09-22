@@ -1,0 +1,67 @@
+POST http://localhost:3000/api/auth/signup
+Content-Type: application/json
+
+{
+  "email":"g@info.com",
+  "firstName":"nome",
+  "password":"Password@1"
+}
+
+###
+
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "password":"Password@1",
+    "email":"g@info.com"
+}
+> {% client.global.set("token", response.body.access_token); %}
+###
+
+GET http://localhost:3000/api/user/me
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+
+POST http://localhost:3000/api/task
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title":"My 3 task",
+    "description":"This is my first task"
+}
+
+###
+PUT http://localhost:3000/api/task/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "PROGRESS"
+}
+
+
+###
+
+GET http://localhost:3000/api/task/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+###
+
+GET http://localhost:3000/api/task?limit=1&offset=1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+DELETE http://localhost:3000/api/task/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+
+

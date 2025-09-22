@@ -22,22 +22,34 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/core/core": [
+      "@app/auth": [
+        "libs/auth/src"
+      ],
+      "@app/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@app/core": [
         "libs/core/src"
       ],
-      "@app/core/core/*": [
+      "@app/core/*": [
         "libs/core/src/*"
       ],
-      "@app/database/database": [
+      "@app/crypt": [
+        "libs/crypt/src"
+      ],
+      "@app/crypt/*": [
+        "libs/crypt/src/*"
+      ],
+      "@app/database": [
         "libs/database/src"
       ],
-      "@app/database/database/*": [
+      "@app/database/*": [
         "libs/database/src/*"
       ],
-      "@app/logger/logger": [
+      "@app/logger": [
         "libs/logger/src"
       ],
-      "@app/logger/logger/*": [
+      "@app/logger/*": [
         "libs/logger/src/*"
       ]
     }
